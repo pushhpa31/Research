@@ -1,3 +1,5 @@
+//AES: Noise vs QBER
+
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -24,5 +26,56 @@ plt.xlabel('Noise Level', fontsize=12)
 plt.ylabel('Quantum Bit Error Rate (QBER)', fontsize=12)
 plt.grid(True, linestyle='--', alpha=0.6)
 plt.legend()
+plt.tight_layout()
+plt.show()
+
+//QuLoRa: Noise vs QBER
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Increase noise levels range
+noise_levels = np.linspace(0, 10, 200)
+
+# Adjusted QBER models for better visual separation
+def qber_brute_force(n):
+    return np.clip(0.01 + 0.01 * n, 0, 1)
+
+def qber_grover(n):
+    return np.clip(0.02 + 0.03 * np.sqrt(n), 0, 1)
+
+def qber_brute_force_side_leak(n):
+    return np.clip(0.02 + 0.04 * n, 0, 1)
+
+def qber_channel_noise(n):
+    return np.clip(0.01 + 0.02 * n**1.5, 0, 1)
+
+def qber_decoherence(n):
+    return np.clip(0.01 * np.exp(0.4 * n), 0, 1)
+
+# Calculate QBER values
+qber_bf = qber_brute_force(noise_levels)
+qber_gv = qber_grover(noise_levels)
+qber_bf_leak = qber_brute_force_side_leak(noise_levels)
+qber_noise = qber_channel_noise(noise_levels)
+qber_dec = qber_decoherence(noise_levels)
+
+# Plot
+plt.figure(figsize=(10, 6))
+plt.plot(noise_levels, qber_bf, label='Brute Force', linewidth=2, color='#1f77b4')
+plt.plot(noise_levels, qber_gv, label="Grover's Attack", linewidth=2, color='#2ca02c')
+plt.plot(noise_levels, qber_bf_leak, label='Brute Force + Side Leak', linewidth=2, color='#d62728')
+plt.plot(noise_levels, qber_noise, label='Quantum Channel Noise', linewidth=2, color='#ff7f0e')
+plt.plot(noise_levels, qber_dec, label='Decoherence', linewidth=2, color='#9467bd')
+
+# Add QBER threshold line
+plt.axhline(y=0.11, color='black', linestyle='--', linewidth=1.5, label='Eve Detection Threshold (11%)')
+
+# Labels and formatting
+plt.xlabel('Noise / Attack Strength (0 to 10)', fontsize=12)
+plt.ylabel('Quantum Bit Error Rate (QBER)', fontsize=12)
+plt.title('QuLoRa', fontsize=14)
+plt.grid(True, linestyle='--', alpha=0.5)
+plt.legend()
+plt.ylim(0, 1)
 plt.tight_layout()
 plt.show()
