@@ -1,0 +1,28 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Define noise levels from 0 to 1
+noise = np.linspace(0, 1, 100)
+
+# QBER models for different attacks on AES-only system
+qber_brute_force = 0.01 + 0.05 * noise
+qber_grover = 0.02 + 0.1 * np.sqrt(noise)
+qber_side_leak = 0.03 + 0.15 * noise
+qber_channel_noise = 0.05 * noise**2
+qber_decoherence = np.full_like(noise, 0.01)
+
+# Plotting
+plt.figure(figsize=(10, 6))
+plt.plot(noise, qber_brute_force, label='Brute Force', linewidth=2)
+plt.plot(noise, qber_grover, label="Grover's Attack", linewidth=2)
+plt.plot(noise, qber_side_leak, label='Brute Force + Side Leak', linewidth=2)
+plt.plot(noise, qber_channel_noise, label='Channel Noise', linewidth=2)
+plt.plot(noise, qber_decoherence, label='Decoherence (N/A)', linestyle='--', linewidth=2)
+
+plt.title('QBER vs. Noise – AES-only System under Various Attacks', fontsize=14)
+plt.xlabel('Noise Level', fontsize=12)
+plt.ylabel('Quantum Bit Error Rate (QBER)', fontsize=12)
+plt.grid(True, linestyle='--', alpha=0.6)
+plt.legend()
+plt.tight_layout()
+plt.show()
